@@ -8,8 +8,8 @@
 
 std::string g_path = "./.config/services-list.json";
 
-nlohmann::json loadServiceTable(std::string& caller, std::string& extension,
-                                std::string& service) {
+nlohmann::json service::loadServiceTable(const std::string& caller, const std::string& extension,
+                                const std::string& service) {
 
   nlohmann::json services;
   std::fstream table;
@@ -107,8 +107,8 @@ nlohmann::json loadServiceTable(std::string& caller, std::string& extension,
   return services;
 }
 
-void openFileGeneral(std::string& caller, std::string& filePath,
-                     std::string& service) {
+void service::openFileGeneral(const std::string& caller, const std::string& filePath,
+                     const std::string& service) {
 
   if (!std::filesystem::exists(filePath)) {
     throw sdbus::Error(sdbus::Error::Name{"com.system.Sharing.Error"},
@@ -126,11 +126,11 @@ void openFileGeneral(std::string& caller, std::string& filePath,
   nlohmann::json services;
 
   if (caller == "openFile") {
-    services = loadServiceTable(caller, extension);
+    services = service::loadServiceTable(caller, extension);
   }
 
   if (caller == "openFileUsingService") {
-    services = loadServiceTable(caller, extension, service);
+    services = service::loadServiceTable(caller, extension, service);
   }
 
   if (!services.contains("openWith")) {
@@ -154,7 +154,7 @@ void openFileGeneral(std::string& caller, std::string& filePath,
   }
 }
 
-void updateServiceList(nlohmann::json updated) {
+void service::updateServicesList(nlohmann::json updated) {
   std::ofstream newTable(g_path, std::ios::trunc);
   newTable << updated.dump(2);
   newTable.close();
