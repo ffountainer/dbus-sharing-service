@@ -11,7 +11,8 @@ SharingService::SharingService(
 
 void SharingService::start() {
   sdbus::ServiceName service{name};
-  connection = sdbus::createSessionBusConnection(service);
+  connection = sdbus::createSessionBusConnection();
+  connection->requestName(service);
 
   sdbus::ObjectPath objectPath{"/"};
   processingService = sdbus::createObject(*connection, objectPath);
@@ -32,8 +33,9 @@ void SharingService::start() {
                                           {}})
       .forInterface(name);
 
-  auto sharingProxy = sdbus::createProxy(*connection, service, objectPath);
-  sdbus::InterfaceName interface{name};
+  auto sharingProxy = sdbus::createProxy(
+      *connection, sdbus::ServiceName{"com.system.sharing"}, objectPath);
+  sdbus::InterfaceName interface{"com.system.Sharing"};
   auto registerMethod = sharingProxy->createMethodCall(
       interface, sdbus::MemberName("registerService"));
 
@@ -46,11 +48,11 @@ void SharingService::start() {
 
 Request::Request(sdbus::MethodCall methodCall) : call(std::move(methodCall)) {}
 
-void Request::sendErrorResponse(const std::string &response) {
+void Request::sendErrorResponse(const std::string &response) const {
   throw sdbus::Error(sdbus::Error::Name{"com.system.Sharing.Error"}, response);
 }
 
-void Request::sendSuccessResponse() {
+void Request::sendSuccessResponse() const {
   auto reply = call.createReply();
   reply.send();
 }

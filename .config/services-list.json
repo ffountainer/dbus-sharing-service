@@ -1,0 +1,8 @@
+{
+  "com.example.reader": [
+    "epub",
+    "pdf",
+    "mobi",
+    "fb2"
+  ]
+}
