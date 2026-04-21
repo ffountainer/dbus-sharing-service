@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-void registerService(sdbus::MethodCall call) {
+void service::registerService(sdbus::MethodCall call) {
 
   std::string name;
   std::vector<std::string> supportedFormats;
@@ -37,7 +37,7 @@ void registerService(sdbus::MethodCall call) {
   reply.send();
 }
 
-void openFile(sdbus::MethodCall call) {
+void service::openFile(sdbus::MethodCall call) {
 
   std::string filePath;
   call >> filePath;
@@ -48,7 +48,7 @@ void openFile(sdbus::MethodCall call) {
   reply.send();
 }
 
-void openFileUsingService(sdbus::MethodCall call) {
+void service::openFileUsingService(sdbus::MethodCall call) {
 
   std::string path;
   std::string service;
