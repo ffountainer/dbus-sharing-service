@@ -19,6 +19,6 @@ void openFileGeneral(const std::string &caller, const std::string &filePath,
                      const std::string &service = "");
 
 void updateServicesList(nlohmann::json updated);
-} 
+} // namespace service
 
 #endif

@@ -33,8 +33,8 @@ private:
 public:
   explicit Request(sdbus::MethodCall methodCall);
 
-  void sendErrorResponse(const std::string &response);
-  void sendSuccessResponse();
+  void sendErrorResponse(const std::string &response) const;
+  void sendSuccessResponse() const;
 };
 
 #endif

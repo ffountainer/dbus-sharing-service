@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <random>
 #include <sdbus-c++/sdbus-c++.h>
@@ -8,8 +9,9 @@
 
 std::string g_path = "./.config/services-list.json";
 
-nlohmann::json service::loadServiceTable(const std::string& caller, const std::string& extension,
-                                const std::string& service) {
+nlohmann::json service::loadServiceTable(const std::string &caller,
+                                         const std::string &extension,
+                                         const std::string &service) {
 
   nlohmann::json services;
   std::fstream table;
@@ -18,14 +20,18 @@ nlohmann::json service::loadServiceTable(const std::string& caller, const std::s
     std::filesystem::create_directories("./.config");
   }
 
-  if (caller == "registerService") {
-
-    if (!std::filesystem::exists(g_path)) {
-      std::fstream newFile(g_path);
-      newFile << "{}";
-      newFile.close();
+  std::cout << "Opening file: " << std::filesystem::absolute(g_path)
+            << std::endl;
+  if (!std::filesystem::exists(g_path)) {
+    std::ofstream newFile(g_path);
+    if (!newFile.is_open()) {
+      throw sdbus::Error(sdbus::Error::Name{"com.system.Sharing.Error"},
+                         "Failed to create services file");
     }
+    newFile << "{}";
+  }
 
+  if (caller == "registerService") {
     table.open(g_path, std::ios::in | std::ios::out);
   }
 
@@ -107,8 +113,9 @@ nlohmann::json service::loadServiceTable(const std::string& caller, const std::s
   return services;
 }
 
-void service::openFileGeneral(const std::string& caller, const std::string& filePath,
-                     const std::string& service) {
+void service::openFileGeneral(const std::string &caller,
+                              const std::string &filePath,
+                              const std::string &service) {
 
   if (!std::filesystem::exists(filePath)) {
     throw sdbus::Error(sdbus::Error::Name{"com.system.Sharing.Error"},

@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.16)
-
 project(dbussharing
     VERSION 1.0
     LANGUAGES CXX
@@ -32,6 +30,7 @@ pkg_check_modules(SDBUSCPP REQUIRED sdbus-c++)
 target_include_directories(dbussharing PRIVATE ${SDBUSCPP_INCLUDE_DIRS})
 target_link_directories(dbussharing PRIVATE ${SDBUSCPP_LIBRARY_DIRS})
 target_link_libraries(dbussharing PRIVATE ${SDBUSCPP_LIBRARIES})
+target_link_libraries(dbussharing PUBLIC sdbus-c++)
 
 
 find_package(Threads REQUIRED)
