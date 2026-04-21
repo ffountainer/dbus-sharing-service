@@ -1,19 +1,13 @@
-#include <filesystem>
-#include <fstream>
-#include <logic.h>
-#include <nlohmann/json.hpp>
-#include <random>
 #include <sdbus-c++/sdbus-c++.h>
-#include <service.h>
-#include <string>
-#include <vector>
+#include <sharing_service.hpp>
 
 int main(int, char **) {
 
   // here I initialise the service with the name of connection
   sdbus::ServiceName serviceName{"com.system.sharing"};
   // and create a connection itself
-  auto connection = sdbus::createSessionBusConnection(serviceName);
+  std::unique_ptr<sdbus::IConnection> connection =
+      sdbus::createSessionBusConnection(serviceName);
 
   sdbus::ObjectPath objectPath{"/"};
 
@@ -29,21 +23,21 @@ int main(int, char **) {
                                   {},
                                   {},
                                   {},
-                                  &registerService,
+                                  &service::registerService,
                                   {}},
           sdbus::MethodVTableItem{sdbus::MethodName{"openFile"},
                                   sdbus::Signature{"s"},
                                   {},
                                   {},
                                   {},
-                                  &openFile,
+                                  &service::openFile,
                                   {}},
           sdbus::MethodVTableItem{sdbus::MethodName{"openFileUsingService"},
                                   sdbus::Signature{"ss"},
                                   {},
                                   {},
                                   {},
-                                  &openFileUsingService,
+                                  &service::openFileUsingService,
                                   {}})
       .forInterface(sharingInterface);
 
