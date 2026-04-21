@@ -1,9 +1,9 @@
 #include <filesystem>
 #include <fstream>
-#include <logic.h>
 #include <nlohmann/json.hpp>
 #include <random>
 #include <sdbus-c++/sdbus-c++.h>
+#include <sharing_service.hpp>
 #include <string>
 #include <vector>
 
@@ -13,6 +13,12 @@ void registerService(sdbus::MethodCall call) {
   std::vector<std::string> supportedFormats;
   call >> name;
   call >> supportedFormats;
+
+  if (name.empty() || supportedFormats.empty()) {
+    throw sdbus::Error(
+        sdbus::Error::Name{"com.system.Sharing.Error"},
+        "RegisterService: Couldn't register service, the data is invalid");
+  }
 
   nlohmann::json services = loadServiceTable("registerService");
 
@@ -24,10 +30,7 @@ void registerService(sdbus::MethodCall call) {
     services[name] = supportedFormats;
   }
 
-  std::ofstream newTable(g_path, std::ios::trunc);
-
-  newTable << services.dump(2);
-  newTable.close();
+  service::updateServicesList(services);
 
   auto reply = call.createReply();
 
@@ -57,4 +60,3 @@ void openFileUsingService(sdbus::MethodCall call) {
   auto reply = call.createReply();
   reply.send();
 }
-

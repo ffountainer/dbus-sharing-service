@@ -4,11 +4,12 @@
 #include <nlohmann/json.hpp>
 #include <random>
 #include <sdbus-c++/sdbus-c++.h>
+#include <sharing_service.hpp>
 
 std::string g_path = "./.config/services-list.json";
 
-nlohmann::json loadServiceTable(std::string caller, std::string extension = "",
-                                std::string service = "") {
+nlohmann::json loadServiceTable(std::string& caller, std::string& extension,
+                                std::string& service) {
 
   nlohmann::json services;
   std::fstream table;
@@ -106,8 +107,8 @@ nlohmann::json loadServiceTable(std::string caller, std::string extension = "",
   return services;
 }
 
-void openFileGeneral(std::string caller, std::string filePath,
-                     std::string service = "") {
+void openFileGeneral(std::string& caller, std::string& filePath,
+                     std::string& service) {
 
   if (!std::filesystem::exists(filePath)) {
     throw sdbus::Error(sdbus::Error::Name{"com.system.Sharing.Error"},
@@ -132,6 +133,10 @@ void openFileGeneral(std::string caller, std::string filePath,
     services = loadServiceTable(caller, extension, service);
   }
 
+  if (!services.contains("openWith")) {
+    throw sdbus::Error(sdbus::Error::Name{"com.system.Sharing.Error"},
+                       caller + ": could not find available service");
+  }
   std::string availableService = services["openWith"];
 
   try {
@@ -147,4 +152,10 @@ void openFileGeneral(std::string caller, std::string filePath,
                        std::string(caller + ": could not open the file") +
                            error.getMessage());
   }
+}
+
+void updateServiceList(nlohmann::json updated) {
+  std::ofstream newTable(g_path, std::ios::trunc);
+  newTable << updated.dump(2);
+  newTable.close();
 }
