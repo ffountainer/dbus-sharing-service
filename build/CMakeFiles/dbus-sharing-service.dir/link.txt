@@ -1,1 +1,0 @@
-/usr/bin/c++ "CMakeFiles/dbus-sharing-service.dir/main.cpp.o" -o dbus-sharing-service  -lsdbus-c++ 
