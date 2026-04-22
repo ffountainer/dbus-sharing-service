@@ -86,7 +86,6 @@ cd build
 - для успешного тестового запуска вы можете использовать следующие команды (при успешном запуске команды после ее окончание выведется только информация о запуске, например, ```method return time=1776879989.278952 sender=:1.260 -> destination=:1.263 serial=5 reply_serial=2```)
 
 ```bash
-# 1
 dbus-send --session \
   --dest=com.system.sharing \
   --print-reply \
@@ -96,7 +95,6 @@ dbus-send --session \
 ```
 
 ```bash
-# 2
 dbus-send --session \
   --dest=com.example.reader \
   --print-reply \
@@ -125,12 +123,10 @@ Error: GDBus.Error:com.system.Sharing.Error: OpenFile: there is no service that 
 - успешные тесты (обратите внимание на то, что вывод при успешном запуске команды -- () )
 
 ```bash
-# 1
 gdbus call --session --dest com.system.sharing --object-path / --method com.system.Sharing.openFile "/home/fountainer/dbus/dbus-sharing-service/test-files/book.pdf"
 ```
 
 ```bash
-# 2
 gdbus call --session \
   --dest com.example.reader \
   --object-path / \
