@@ -18,7 +18,7 @@ void SharingService::start() {
   processingService = sdbus::createObject(*connection, objectPath);
 
   processingService
-      ->addVTable(sdbus::MethodVTableItem{sdbus::MethodName{"OpenFile"},
+      ->addVTable(sdbus::MethodVTableItem{sdbus::MethodName{"openFile"},
                                           sdbus::Signature{"s"},
                                           {},
                                           {},
