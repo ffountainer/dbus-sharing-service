@@ -7,7 +7,7 @@
 #include <sdbus-c++/sdbus-c++.h>
 #include <sharing_service.hpp>
 
-std::string g_path = "./.config/services-list.json";
+std::string g_path = ".config/services-list.json";
 
 nlohmann::json service::loadServiceTable(const std::string &caller,
                                          const std::string &extension,
@@ -151,12 +151,12 @@ void service::openFileGeneral(const std::string &caller,
     sdbus::ObjectPath path{"/"};
     auto proxy = sdbus::createProxy(processingService, path);
 
-    proxy->callMethod("OpenFile")
+    proxy->callMethod("openFile")
         .onInterface(availableService)
         .withArguments(filePath);
   } catch (sdbus::Error &error) {
     throw sdbus::Error(sdbus::Error::Name{"com.system.Sharing.Error"},
-                       std::string(caller + ": could not open the file") +
+                       std::string(caller + ": could not open the file\n") +
                            error.getMessage());
   }
 }
