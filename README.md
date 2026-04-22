@@ -71,31 +71,72 @@ cd build
 ```
 - откройте новое окно терминала;
 
-### примеры успешных тестов (ожидаемый результат: ())
+- обратите внимание на то, что в тестах используются файлы из этой директории, вы также можете использовать любые другие файлы на вашем устройстве, указав правильный путь;
 
-- для успешного тестового запуска вы можете использовать следующие команды:
+- в тестах указана моя директория, используйте в своих тестах 
 
 ```bash
-# 1
-gdbus call --session --dest com.system.sharing --object-path / --method com.system.Sharing.openFile "/repo-with-project/dbus-sharing-service/test-files/book.pdf"
+"/repo-with-project/dbus-sharing-service/test-files/book.pdf"
 ```
-repo-with-project -- это директория, в которую вы загрузили этот проект, например, для меня эта команда выглядит так:
+
+ где repo-with-project -- это директория, в которую вы загрузили этот проект
+
+### Примеры тестов с использованием dbus-send
+
+- для успешного тестового запуска вы можете использовать следующие команды (при успешном запуске команды после ее окончание выведется только информация о запуске, например, ```method return time=1776879989.278952 sender=:1.260 -> destination=:1.263 serial=5 reply_serial=2```)
 
 ```bash
- gdbus call --session --dest com.system.sharing --object-path / --method com.system.Sharing.openFile "/home/fountainer/dbus/dbus-sharing-service/test-files/book.pdf"
+dbus-send --session \
+  --dest=com.system.sharing \
+  --print-reply \
+  / \
+  com.system.Sharing.openFile \
+  string:"/home/fountainer/dbus/dbus-sharing-service/test-files/book.pdf"
 ```
+
 ```bash
-# 2
+dbus-send --session \
+  --dest=com.example.reader \
+  --print-reply \
+  / \
+  com.example.reader.openFile \
+  string:"/home/fountainer/dbus/dbus-sharing-service/test-files/book.pdf"
+```
+
+- пример ошибки 
+
+```bash
+dbus-send --session \
+  --dest=com.system.sharing \
+  --print-reply \
+  / \
+  com.system.Sharing.openFile \
+  string:"/home/fountainer/dbus/dbus-sharing-service/test-files/video.mp4"
+```
+Ожидаемый результат:
+```bash
+Error: GDBus.Error:com.system.Sharing.Error: OpenFile: there is no service that can open your file :(
+```
+
+### Примеры тестов с использованием gdbus call
+
+- успешные тесты (обратите внимание на то, что вывод при успешном запуске команды -- () )
+
+```bash
+gdbus call --session --dest com.system.sharing --object-path / --method com.system.Sharing.openFile "/home/fountainer/dbus/dbus-sharing-service/test-files/book.pdf"
+```
+
+```bash
 gdbus call --session \
   --dest com.example.reader \
   --object-path / \
   --method com.example.reader.openFile \
   "/home/fountainer/dbus/dbus-sharing-service/test-files/book.pdf"
 ```
-- для запуска команды с одной из ошибок запустите:
+- запуск команды с одной из ошибок запустите:
 
 ```bash
- gdbus call --session --dest com.system.sharing --object-path / --method com.system.Sharing.openFile "/repo-with-project/dbus-sharing-service/test-files/video.mp4"
+ gdbus call --session --dest com.system.sharing --object-path / --method com.system.Sharing.openFile "/home/fountainer/dbus/dbus-sharing-service/test-files/video.mp4"
 ```
 Ожидаемый результат:
 ```bash
